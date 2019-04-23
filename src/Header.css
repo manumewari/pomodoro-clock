@@ -1,0 +1,14 @@
+#header .header-text {
+    font-family: Great Vibes;
+    font-size: 1.5rem;
+}
+
+#header .timer-details {
+    font-family: Bad Script;
+    font-size: 1.5rem;
+}
+
+#header .timer-details p{
+    color: darkblue;
+    font-size: 3rem;
+}

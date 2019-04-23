@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import './index.css';
+import './App.css';
 import Button from "./Button";
 
 let Actions = (props) => {
 
     return (
         <div >
-            <div className="row text-center">
-                <div className="col">
-                    <Button clickAction={props.startTime} label="Start"></Button>
-                    <Button clickAction={props.pause} label="Pause"></Button>
-                    <Button clickAction={props.reset} label="Reset"></Button>
+            <div className="row actions">
+                <div className="col text-center">
+                    <Button clickAction={props.startTime} label="START" isDisabled={props.currentAction==="start"}></Button>
+                    <Button clickAction={props.pause} label="PAUSE"></Button>
+                    <Button clickAction={props.reset} label="RESET"></Button>
                 </div>
             </div>
         </div>

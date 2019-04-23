@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './index.css';
+import './Watch.css';
 import Actions from './Actions';
 
 class Watch extends Component {
@@ -7,7 +7,8 @@ class Watch extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            type: "Session"
+            type: "Session",
+            currentAction: ""
         }
         this.secInterval = null;
     }
@@ -15,12 +16,14 @@ class Watch extends Component {
     reset = () => {
         this.setState({
             minutes: this.props.sessionLength,
-            seconds: 0
+            seconds: 0,
+            currentAction: "reset"
         });
     }
 
     pause = () => {
         clearInterval(this.secInterval);
+        this.setState({currentAction:"pause"});
     }
 
     startTime = () => {
@@ -28,7 +31,7 @@ class Watch extends Component {
             let sec;
             let min;
             let type = this.state.type;
-            if(!this.state.minutes && !this.state.seconds) {
+            if(this.state.currentAction === "") {
                 this.reset();
                 sec = this.state.seconds;
                 min = this.state.minutes;
@@ -52,28 +55,36 @@ class Watch extends Component {
                     }
                 }
             }
-            this.setState({minutes:min, seconds:sec, type: type})
+            this.setState({minutes:min, seconds:sec, type: type, currentAction:"start"})
         },1000);
     }
 
-  render() {
-    return (
-        <div >
-            <div className="row text-center">
-                <div className="col">
-                    <h2>{this.state.type}</h2>
-                </div>
-            </div>
-            <div className="row text-center">
-                <div className="col">
-                    <h2>{(this.state.minutes >= 0)?this.state.minutes:this.props.sessionLength} : {this.state.seconds?this.state.seconds:0}</h2>
-                </div>
-            </div>
+    formatText = (value) => {
+        if(value<10) {
+            value = "0"+value;
+        }
+        return value;
+    }
 
-            <Actions startTime={this.startTime} pause={this.pause} reset={this.reset} />
-        </div>
-    );
-  }
+  render() {
+        const minuteText = this.formatText((this.state.minutes >= 0)?this.state.minutes:this.props.sessionLength);
+        const secondsText = this.formatText(this.state.seconds?this.state.seconds:0);
+        return (
+            <div className="clock-type">
+                <div className="row text-center">
+                    <div className={"col "+(this.state.type==='Break'?'break':'')}>
+                        <h2>{this.state.type}</h2>
+                    </div>
+                </div>
+                <div className="row text-center">
+                    <div className="col">
+                        <h2>{minuteText} : {secondsText}</h2>
+                    </div>
+                </div>
+                <Actions startTime={this.startTime} pause={this.pause} reset={this.reset} currentAction={this.state.currentAction}/>
+            </div>
+        );
+    }
 }
 
 export default Watch;

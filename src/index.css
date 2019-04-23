@@ -1,10 +1,17 @@
 
 body {
-  background: lightsteelblue;
+  background: darkblue;
 }
 
 #root {
-  background: lightsteelblue;
+  background: darkblue;
   padding: 8rem;
   margin-top: 3rem;
+}
+
+@media (max-width: 575px) {
+  #root {
+    padding: 2rem;
+    margin-top: 3rem;
+  }
 }

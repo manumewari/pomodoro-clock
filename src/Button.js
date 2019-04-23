@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import './index.css';
+import './App.css';
 
 let Button = (props) => {
     return (
-        <button onClick={props.clickAction}>{props.label}</button>
+        <button type="button" class="btn btn-light button" onClick={props.clickAction} disabled={props.isDisabled}>{props.label}</button>
     );
 }
 
