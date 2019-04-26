@@ -3,5 +3,10 @@
 }
 
 .break {
+    color: red;
+}
+
+.session {
     color: green;
+    font-size: bold;
 }

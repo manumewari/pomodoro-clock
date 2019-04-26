@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './Header.css';
+import './css/Header.css';
 
 class Header extends Component {
 
@@ -13,14 +13,6 @@ class Header extends Component {
             <div className="row text-center">
                 <div className="col header-text">
                     <h1>Pomodoro Clock</h1>
-                </div>
-            </div>
-            <div className="row text-center">
-                <div className="col timer-details">
-                    <h2>Session Length <p>{this.props.sessionLength}</p></h2>
-                </div>
-                <div className="col timer-details">
-                    <h2>Break Length <p>{this.props.breakLength}</p></h2>
                 </div>
             </div>
         </div>
