@@ -8,8 +8,6 @@ class Timer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            type: TimerType.SESSION,
-            timerState: TimerState.NOTSTARTED,
             minutes: this.props.sessionLength,
             seconds: 0,
             breakCount: 0
@@ -20,22 +18,27 @@ class Timer extends Component {
     reset = () => {
         this.setState({
          minutes: TimerConstants.sessionLength,
-         seconds: 0,
-         timerState: TimerState.RESET
+         seconds: 0
         });
         this.props.reset();
     }
 
     pause = () => {
         clearInterval(this.secInterval);
-        this.setState({timerState:TimerState.PAUSE});
+        this.props.setTimerState(TimerState.PAUSE);
+    }
+
+    updateTimer = (min, sec, type, timerState, breakCount) => {
+        this.props.setTimerState(timerState);
+        this.props.setTimerType(type);
+        this.setState({minutes:min, seconds:sec, breakCount:breakCount});
     }
 
     startTime = () => {
         this.secInterval = setInterval(() => {
             let sec = this.state.seconds;
             let min = this.state.minutes;
-            let type = this.state.type;
+            let type = this.props.timerType;
             let breakCount = this.state.breakCount;
             if(sec-- === 0) {
                 if(min-- === 0) {
@@ -45,13 +48,13 @@ class Timer extends Component {
                     sec = 59;
                 }
             }
-            this.setState({minutes:min, seconds:sec, type: type, timerState:TimerState.START, breakCount:breakCount})
+            this.updateTimer(min, sec, type, TimerState.START, breakCount);
         },1000);
     }
 
     changeTimerState = () => {
         let breakCount = this.state.breakCount;
-        if(this.state.type === TimerType.SESSION) {
+        if(this.props.timerType === TimerType.SESSION) {
             if(++breakCount === TimerConstants.longBreakNumber) {
                 return [TimerType.BREAK, TimerConstants.longBreakLength, 0, 0];
             }
@@ -63,19 +66,19 @@ class Timer extends Component {
     }
 
     timerStateLabel = () => {
-        return this.state.type === TimerType.SESSION?TimerLabel.SESSION:TimerLabel.BREAK;
+        return this.props.timerType === TimerType.SESSION?TimerLabel.SESSION:TimerLabel.BREAK;
     }
 
     isDisabled = (buttonType) => {
         switch(buttonType) {
             case TimerState.START:
-                return this.state.timerState===TimerState.START;
+                return this.props.timerState===TimerState.START;
 
             case TimerState.PAUSE:
-                return this.state.timerState!==TimerState.START;
+                return this.props.timerState!==TimerState.START;
 
             case TimerState.RESET:
-                return this.state.timerState===TimerState.NOTSTARTED || this.state.timerState===TimerState.START;
+                return this.props.timerState===TimerState.NOTSTARTED || this.props.timerState===TimerState.START;
         }
 
     }
@@ -93,7 +96,7 @@ class Timer extends Component {
     }
 
     timerClass = () => {
-        return (this.state.type===TimerType.BREAK?'break':'session');
+        return (this.props.timerType===TimerType.BREAK?'break':'session');
     }
 
     render() {
@@ -117,7 +120,7 @@ class Timer extends Component {
                     <Button clickAction={this.reset} label={TimerStateLabel.RESET} isDisabled={this.isDisabled(TimerState.RESET)}></Button>
                 </div>
             </div>
-            <Alarm playAlarm={this.state.type===TimerType.BREAK}/>
+            <Alarm playAlarm={this.props.timerType===TimerType.BREAK}/>
         </div>
     );
     }

@@ -3,7 +3,7 @@ import './css/App.css';
 import Header from './Header';
 import Timer from './Timer';
 import Image from './Image';
-import {TimerConstants, MAX_SESSION_TIME, MIN_SESSION_TIME, MAX_BREAK_TIME, MIN_BREAK_TIME} from './Constants';
+import {TimerState, TimerType, TimerConstants, MAX_SESSION_TIME, MIN_SESSION_TIME, MAX_BREAK_TIME, MIN_BREAK_TIME} from './Constants';
 
 class App extends Component {
 
@@ -11,7 +11,9 @@ class App extends Component {
         super(props);
         this.state = {
             breakLength:TimerConstants.breakLength,
-            sessionLength:TimerConstants.sessionLength
+            sessionLength:TimerConstants.sessionLength,
+            type: TimerType.SESSION,
+            timerState: TimerState.NOTSTARTED
         }
         this.increaseSessionLength = this.increaseSessionLength.bind(this);
         this.decreaseSessionLength = this.decreaseSessionLength.bind(this);
@@ -22,24 +24,42 @@ class App extends Component {
     reset = () => {
         this.setState({
             breakLength:TimerConstants.breakLength,
-            sessionLength:TimerConstants.sessionLength
+            sessionLength:TimerConstants.sessionLength,
+            type: TimerType.SESSION,
+            timerState: TimerState.RESET
         });
     }
 
     increaseSessionLength = () => {
-        this.setState({sessionLength: (this.state.sessionLength < MAX_SESSION_TIME )?this.state.sessionLength+1:this.state.sessionLength});
+        if(this.state.timerState !== TimerState.START) {
+            this.setState({sessionLength: (this.state.sessionLength < MAX_SESSION_TIME )?this.state.sessionLength+1:this.state.sessionLength});
+        }
     }
 
     decreaseSessionLength = () => {
-        this.setState({sessionLength: (this.state.sessionLength > MIN_SESSION_TIME)?this.state.sessionLength-1:this.state.sessionLength});
+        if(this.state.timerState !== TimerState.START) {
+            this.setState({sessionLength: (this.state.sessionLength > MIN_SESSION_TIME)?this.state.sessionLength-1:this.state.sessionLength});
+        }
     }
 
     increaseBreakLength = () => {
-        this.setState({breakLength: (this.state.breakLength < MAX_BREAK_TIME)?this.state.breakLength+1:this.state.breakLength});
+        if(this.state.timerState !== TimerState.START) {
+            this.setState({breakLength: (this.state.breakLength < MAX_BREAK_TIME)?this.state.breakLength+1:this.state.breakLength});
+        }
     }
 
     decreaseBreakLength = () => {
-        this.setState({breakLength: (this.state.breakLength > MIN_BREAK_TIME)?this.state.breakLength-1:this.state.breakLength });
+        if(this.state.timerState !== TimerState.START) {
+            this.setState({breakLength: (this.state.breakLength > MIN_BREAK_TIME)?this.state.breakLength-1:this.state.breakLength });
+        }
+    }
+
+    setTimerState = (timerState) => {
+        this.setState({timerState: timerState});
+    }
+
+    setTimerType = (type) => {
+        this.setState({type: type});
     }
 
   render() {
@@ -64,7 +84,9 @@ class App extends Component {
                 </div>
             </div>
 
-            <Timer sessionLength={this.state.sessionLength} breakLength={this.state.breakLength} reset={this.reset} />
+            <Timer key={this.state.sessionLength} sessionLength={this.state.sessionLength} breakLength={this.state.breakLength} reset={this.reset}
+                    timerType={this.state.type} timerState={this.state.timerState} setTimerType={this.setTimerType}
+                    setTimerState={this.setTimerState} />
 
         </div>
     );
