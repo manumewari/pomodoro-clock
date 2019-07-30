@@ -1,0 +1,12 @@
+.clock-type {
+    font-family: Calligraffitti;
+}
+
+.break {
+    color: red;
+}
+
+.session {
+    color: green;
+    font-size: bold;
+}
